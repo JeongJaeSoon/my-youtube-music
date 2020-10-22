@@ -70,7 +70,7 @@ urls = [
 ]
 
 err_count = 0
-for i in range(100):
+for i in range(1000):
     for index, url in enumerate(urls):
         print(f"[{index + 1}]", url)
         try:
@@ -82,3 +82,5 @@ for i in range(100):
             for result in results:
                 print(result)
         print()
+
+print(err_count)
