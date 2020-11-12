@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect("database/test.db")
+conn = sqlite3.connect("../database/test.db")
 # Auto commit 사용시
 # conn = sqlite3.connect("database/test.db", isolation_level=None)
 
