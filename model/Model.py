@@ -3,7 +3,7 @@ import sqlite3
 
 class Model:
     def get_db_conn(self):
-        conn = sqlite3.connect("../database/my_youtube_music_playlist.db")
+        conn = sqlite3.connect("database/my_youtube_music_playlist.db")
         cursor = conn.cursor()
         return conn, cursor
 

@@ -4,7 +4,7 @@ import sqlite3
 # print(sqlite3.version)
 
 # SQLite DB 연결
-conn = sqlite3.connect("../database/test.db")
+conn = sqlite3.connect("../../database/test.db")
 
 print("[START] 기본 쿼리 실행")
 # Connection 으로부터 Cursor 생성
@@ -23,7 +23,7 @@ conn.close()
 
 print()
 print("[START] ? placeholder 쿼리 실행")
-conn = sqlite3.connect("../database/test.db")
+conn = sqlite3.connect("../../database/test.db")
 
 cur = conn.cursor()
 sql = "SELECT * FROM customer WHERE category=? and region=?"
@@ -36,7 +36,7 @@ conn.close()
 
 print()
 print("[START] Named placeholder 쿼리 실행")
-conn = sqlite3.connect("../database/test.db")
+conn = sqlite3.connect("../../database/test.db")
 
 cur = conn.cursor()
 sql = "SELECT * FROM customer WHERE id= :Id"
