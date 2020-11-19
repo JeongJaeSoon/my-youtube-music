@@ -1,65 +1,85 @@
-from module.db_util import \
-    check_sqlite_db_table, create_sqlite_db_connection, create_playlist_table, \
-    create_music_list_table, delete_playlist_table, delete_music_list_table, \
-    insert_playlist, insert_music_list
 import sqlite3
+
+from model.Model import Model
+from model.PlayList import PlayList
+from model.MusicList import MusicList
+
+playlist = PlayList()
+music_list = MusicList()
 
 
 # 데이터 초기화 함수
 #   -> 프로그램 실행 시, DB 상태를 점검
+#   -> DB 가 없을 경우, DB 를 생성
 #   -> 문제가 있을 경우, 데이터를 초기화 하고 다시 생성
 def init_sqlite_db_tables():
-    is_table_exists = check_sqlite_db_table()
+    model = Model()
+    conn, cursor = model.get_db_conn()
+    is_table_exists = model.check_table_list(cursor)
+    if not is_table_exists['result']:
+        print("=> 테이블 재설정 진행\n")
 
-    # DB 상태가 불안정할 경우, 프로그램 에러 방지를 위해 테이블 삭제 후 재생성
-    if not is_table_exists['playlist'] == is_table_exists['music_list']:
-        print("==> DB 재설정")
-        is_table_exists['playlist'] = delete_playlist_table() if is_table_exists['playlist'] else is_table_exists[
-            'playlist']
-        is_table_exists['music_list'] = delete_music_list_table() if is_table_exists['music_list'] else is_table_exists[
-            'music_list']
-        print()
+        if is_table_exists['playlist']:
+            playlist.drop_table(cursor, "playlist")
+        if is_table_exists['music_list']:
+            music_list.drop_table(cursor, "music_list")
 
-    if not is_table_exists['playlist']:
-        create_playlist_table()
-        print("플레이리스트 목록\t : 생성")
+        sql_create = {
+            "playlist": "CREATE TABLE playlist ("
+                        "       id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        "       name TEXT UNIQUE NOT NULL,"
+                        "       create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
+                        ")",
+            "music_list": "CREATE TABLE music_list ("
+                          "     id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                          "     title TEXT NOT NULL,"
+                          "     musician TEXT NOT NULL,"
+                          "     url TEXT NOT NULL,"
+                          "     playlist_id INTEGER,"
+                          "     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                          "     FOREIGN KEY (playlist_id) REFERENCES playlist (id)"
+                          ")"
+        }
+        playlist.create_table(cursor, sql_create['playlist'])
+        music_list.create_table(cursor, sql_create['music_list'])
 
-    if not is_table_exists['music_list']:
-        create_music_list_table()
-        print("노래 목록\t\t\t : 생성")
-    print("==> 필요 DB 생성 완료\n")
+    conn.close()
 
 
 # 플레이리스트를 생성하는 함수
 #   -> 플레이리스트 이름, 플레이리스트 목록을 받음
 #   -> 중복된 플레이리스트 이름은 사용 불가
 #   -> 플레이 리스트 생성시,
-def create_playlist(playlist_name, music_list=[]):
-    conn = create_sqlite_db_connection()
+def create_playlist(playlist_name, musics=None):
+    if musics is None:
+        musics = []
+
     count = 0
-    is_insert_music = True if len(music_list) != 0 else False
+    is_insert_music = True if len(musics) != 0 else False
+    conn, cursor = Model().get_db_conn()
 
     try:
         # 플레이리스트 생성 및 음악 목록 저장
-        playlist_id = insert_playlist(conn, playlist_name)
+        playlist_id = playlist.insert_playlist(cursor, playlist_name)
         if is_insert_music:
-            count = insert_music_list(conn, playlist_id, music_list)
+            count = music_list.insert_music_list(cursor, playlist_id, musics)
     except sqlite3.IntegrityError:
         print("중복된 이름의 플레이리스트는 저장할 수 없습니다.")
         return
+    # except Exception:
+    #     print("알 수 없는 오류로 종료되었습니다.")
     else:
         print(f"플레이리스트 '{playlist_name}' 이(가) 생성되었습니다.")
         print(f"({count}곡 저장 완료)" if
               is_insert_music else "", end="")
         # TODO 주석 풀기
-        # conn.commit()
+        conn.commit()
 
 
 # TODO 플레이리스트 이름 수정
 # TODO 플레이리스트에 음악 추가(여러곡 또는 한곡)
 # TODO 플레이리스트에서 음악 삭제(여러곡 또는 한곡)
 # TODO 플레이리스트 삭제
-
 
 # <<-- TEST CODE -->>
 test_music_list = [
@@ -78,4 +98,5 @@ test_music_list = [
 ]
 
 init_sqlite_db_tables()
-create_playlist("기분 좋아지는 노래9", test_music_list)
+create_playlist("기분 좋아지는 노래10", test_music_list)
+create_playlist("기분 좋아지는 노래1")
