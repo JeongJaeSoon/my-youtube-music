@@ -5,6 +5,7 @@ def create_sqlite_db_connection():
     return sqlite3.connect("../database/my_youtube_music_playlist.db")
 
 
+# <<-- DB 초기화 관련 util function
 def check_sqlite_db_table():
     conn = create_sqlite_db_connection()
     cursor = conn.cursor()
@@ -43,7 +44,7 @@ def create_playlist_table():
     cursor = conn.cursor()
     sql_create_playlist_table = "CREATE TABLE playlist (" \
                                 "       id INTEGER PRIMARY KEY AUTOINCREMENT," \
-                                "       name TEXT NOT NULL," \
+                                "       name TEXT UNIQUE NOT NULL," \
                                 "       create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP " \
                                 ")"
     cursor.execute(sql_create_playlist_table)
@@ -86,3 +87,42 @@ def delete_music_list_table():
     print("노래 목록\t\t\t : 삭제")
 
     return False
+
+
+# -->>
+
+# <<-- playlist 관련 util function
+def insert_playlist(conn, playlist_name):
+    cursor = conn.cursor()
+
+    sql_playlist_insert = f"INSERT INTO playlist(name) VALUES ('{playlist_name}')"
+    cursor.execute(sql_playlist_insert)
+    created_playlist_id = select_playlist(conn, playlist_name)
+
+    return created_playlist_id
+
+
+def select_playlist(conn, playlist_name):
+    cursor = conn.cursor()
+
+    sql_playlist_search = f"SELECT * FROM playlist WHERE name = '{playlist_name}'"
+    cursor.execute(sql_playlist_search)
+    playlist_id = cursor.fetchall()[0][0]
+
+    return playlist_id
+
+
+# -->>
+
+# <<-- music_list 관련 util function
+def insert_music_list(conn, playlist_id, music_list):
+    cursor = conn.cursor()
+    count = 0
+    for music in music_list:
+        if music['link']:
+            sql_insert_music_list = "INSERT INTO music_list(title, musician, url, playlist_id) VALUES(?, ?, ?, ?)"
+            cursor.execute(sql_insert_music_list, (music['title'], music['musician'], music['url'], playlist_id))
+            count = count + 1
+
+    return count
+# -->>

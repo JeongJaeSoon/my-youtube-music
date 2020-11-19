@@ -1,8 +1,13 @@
 from module.db_util import \
     check_sqlite_db_table, create_sqlite_db_connection, create_playlist_table, \
-    create_music_list_table, delete_playlist_table, delete_music_list_table
+    create_music_list_table, delete_playlist_table, delete_music_list_table, \
+    insert_playlist, insert_music_list
+import sqlite3
 
 
+# 데이터 초기화 함수
+#   -> 프로그램 실행 시, DB 상태를 점검
+#   -> 문제가 있을 경우, 데이터를 초기화 하고 다시 생성
 def init_sqlite_db_tables():
     is_table_exists = check_sqlite_db_table()
 
@@ -15,7 +20,6 @@ def init_sqlite_db_tables():
             'music_list']
         print()
 
-    print("==> 필요 DB 생성")
     if not is_table_exists['playlist']:
         create_playlist_table()
         print("플레이리스트 목록\t : 생성")
@@ -23,28 +27,41 @@ def init_sqlite_db_tables():
     if not is_table_exists['music_list']:
         create_music_list_table()
         print("노래 목록\t\t\t : 생성")
+    print("==> 필요 DB 생성 완료\n")
 
 
-def insert_playlist(playlist_name, musics):
-    # TODO 플레이리스트 중복 검사 알고리즘 추가 필요
-
+# 플레이리스트를 생성하는 함수
+#   -> 플레이리스트 이름, 플레이리스트 목록을 받음
+#   -> 중복된 플레이리스트 이름은 사용 불가
+#   -> 플레이 리스트 생성시,
+def create_playlist(playlist_name, music_list=[]):
     conn = create_sqlite_db_connection()
-    cursor = conn.cursor()
+    count = 0
+    is_insert_music = True if len(music_list) != 0 else False
 
-    # 플레이리스트
-    sql_insert_playlist = f"INSERT INTO playlist(name) VALUES ('{playlist_name}')"
-    cursor.execute(sql_insert_playlist)
+    try:
+        # 플레이리스트 생성 및 음악 목록 저장
+        playlist_id = insert_playlist(conn, playlist_name)
+        if is_insert_music:
+            count = insert_music_list(conn, playlist_id, music_list)
+    except sqlite3.IntegrityError:
+        print("중복된 이름의 플레이리스트는 저장할 수 없습니다.")
+        return
+    else:
+        print(f"플레이리스트 '{playlist_name}' 이(가) 생성되었습니다.")
+        print(f"({count}곡 저장 완료)" if
+              is_insert_music else "", end="")
+        # TODO 주석 풀기
+        # conn.commit()
 
-    # TODO name(기타 등등) 으로 정보 가져오는 함수 만들어서 추가
-    sql_select_playlist_by_name = f"SELECT * FROM playlist WHERE name = '{playlist_name}'"
-    cursor.execute(sql_select_playlist_by_name)
-    print(cursor.fetchall())
-    # for music in musics:
-    #     if music['link']:
-    #         sql_insert_music_list = "INSERT INTO music_list(title, musician, url, playlist_id)"
-    #         print(music)
+
+# TODO 플레이리스트 이름 수정
+# TODO 플레이리스트에 음악 추가(여러곡 또는 한곡)
+# TODO 플레이리스트에서 음악 삭제(여러곡 또는 한곡)
+# TODO 플레이리스트 삭제
 
 
+# <<-- TEST CODE -->>
 test_music_list = [
     {'link': True, 'title': 'Good Vibes', 'musician': 'HRVY, Matoma', 'url': 'Q1Yy0tNWtnE'},
     {'link': True, 'title': 'Push-ups', 'musician': 'Scarlet Pleasure', 'url': 'aXGOieAtYzk'},
@@ -59,5 +76,6 @@ test_music_list = [
     {'link': True, 'title': 'Backyard Boy', 'musician': 'Claire Rosinkranz, Jeremy Zucker',
      'url': 'WmnnvfP-j0k'},
 ]
+
 init_sqlite_db_tables()
-insert_playlist("기분 좋아지는 노래2", test_music_list)
+create_playlist("기분 좋아지는 노래9", test_music_list)
