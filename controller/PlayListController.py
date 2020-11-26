@@ -1,25 +1,8 @@
 import sqlite3
 from controller.Controller import Controller
-from model.Model import Model
-from model.PlayList import PlayList
-from model.MusicList import MusicList
 
 
 class PlayListController(Controller):
-
-    def __init__(self):
-        self.conn, self.cursor = Model().get_db_conn()
-        self.playlist = PlayList()
-        self.music_list = MusicList()
-
-    def get_playlist(self, playlist_id):
-        playlist = self.playlist.select_playlist(self.cursor, 'id', playlist_id)
-
-        if playlist is None:
-            return False
-
-        return playlist
-
     def create_playlist(self, playlist_name, musics=None):
         if musics is None:
             musics = []
@@ -28,12 +11,12 @@ class PlayListController(Controller):
 
         try:
             # 플레이리스트 생성 및 음악 목록 저장
-            playlist_id = self.playlist.insert_playlist(self.cursor, playlist_name)
+            playlist_id = self.playlist.insert_playlist(self.cursor, playlist_name)[0]
 
             # 플레이리스트 생성 시 음악 목록에 추가될 경우
             is_insert_music = True if len(musics) != 0 else False
             if is_insert_music:
-                count = MusicList().insert_music_list(self.cursor, playlist_id, musics)
+                count = self.music_list.insert_music_list(self.cursor, playlist_id, musics)
         except sqlite3.IntegrityError:
             return "이미 저장된 플레이리스트 이름입니다."
         # TODO 예외 처리 수정
@@ -47,7 +30,7 @@ class PlayListController(Controller):
 
     def modify_playlist_name(self, playlist_id, new_playlist_name):
         # 플레이리스트가 존재하지 않는 경우
-        playlist = self.get_playlist(playlist_id)
+        playlist = self.playlist.check_playlist(self.cursor, playlist_id)
         if playlist is False:
             return "존재하지 않는 플레이리스트입니다."
 
@@ -74,12 +57,13 @@ class PlayListController(Controller):
 
     def destroy_playlist(self, playlist_id):
         # 플레이리스트가 존재하지 않는 경우
-        playlist = self.get_playlist(playlist_id)
+        playlist = self.playlist.check_playlist(self.cursor, playlist_id)
         if playlist is False:
             return "존재하지 않는 플레이리스트입니다."
 
         delete_playlist = self.playlist.delete_playlist(self.cursor, playlist_id)
+        delete_music_list = self.music_list.delete_playlist_music(self.cursor, playlist_id)
 
-        if delete_playlist is None:
+        if delete_playlist is None and delete_music_list is None:
             self.conn.commit()
             return f"'{playlist[1]}' 플레이리스트가 삭제되었습니다."

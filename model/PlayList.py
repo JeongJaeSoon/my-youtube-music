@@ -2,6 +2,15 @@ from model.Model import Model
 
 
 class PlayList(Model):
+
+    def check_playlist(self, cursor, playlist_id):
+        playlist = self.select_playlist(cursor, 'id', playlist_id)
+
+        if playlist is None:
+            return False
+
+        return playlist
+
     # 플레이리스트 생성
     def insert_playlist(self, cursor, playlist_name):
         sql_playlist_insert = f"INSERT INTO playlist(name) VALUES ('{playlist_name}')"

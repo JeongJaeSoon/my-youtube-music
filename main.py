@@ -1,10 +1,11 @@
 from controller.Controller import Controller
 from controller.PlayListController import PlayListController
+from controller.MusicListController import MusicListController
 
 Controller().init_database()
 
 # <<-- TEST DATA CODE -->>
-playlist_name = "기분 좋아지는 노래1223d"
+playlist_name = "기분 좋아지는 노래1"
 music_list = [
     {'link': True, 'title': 'Good Vibes', 'musician': 'HRVY, Matoma', 'url': 'Q1Yy0tNWtnE'},
     {'link': True, 'title': 'Push-ups', 'musician': 'Scarlet Pleasure', 'url': 'aXGOieAtYzk'},
@@ -20,11 +21,12 @@ music_list = [
      'url': 'WmnnvfP-j0k'},
 ]
 
-# PlayListController().create_playlist(playlist_name, music_list)
+# print(PlayListController().create_playlist(playlist_name, music_list))
 # print(PlayListController().create_playlist(playlist_name))
 
-# TODO 플레이리스트에 음악 추가(여러곡 또는 한곡)
 # TODO 플레이리스트에서 음악 삭제(여러곡 또는 한곡)
+# TODO Refactoring sql 딕셔너리
 
-print(PlayListController().modify_playlist_name(4, "tssedㅇfst"))
-print(PlayListController().destroy_playlist(3))
+# print(PlayListController().modify_playlist_name(5, "atsseddㅇfst"))
+# print(PlayListController().destroy_playlist(1))
+print(MusicListController().delete_music_list([22, 23, 24]))
