@@ -44,8 +44,8 @@ class PlayListController(Controller):
         except sqlite3.IntegrityError:
             return "이미 저장된 플레이리스트 이름입니다."
         # TODO 예외 처리 수정
-        # except Exception:
-        #     return "알 수 없는 오류로 종료되었습니다."
+        except Exception:
+            return "알 수 없는 오류로 종료되었습니다."
 
         # 이름 변경 성공 시
         if updated_playlist[1] == new_playlist_name:

@@ -24,8 +24,8 @@ music_list = [
 # print(PlayListController().create_playlist(playlist_name, music_list))
 # print(PlayListController().create_playlist(playlist_name))
 
-# TODO 플레이리스트에서 음악 삭제(여러곡 또는 한곡)
-# TODO Refactoring sql 딕셔너리
+# TODO 플레이리스트 목록 가져오기
+# TODO 플레이리스트의 음악 목록 가져오기
 
 # print(PlayListController().modify_playlist_name(5, "atsseddㅇfst"))
 # print(PlayListController().destroy_playlist(1))
