@@ -14,6 +14,23 @@ class PlayList(Model):
     def select_playlist(self, cursor, column_name, playlist_name):
         sql_playlist_search = f"SELECT * FROM playlist WHERE {column_name} = '{playlist_name}'"
         cursor.execute(sql_playlist_search)
-        playlist_id = cursor.fetchall()[0][0]
+        try:
+            playlist = cursor.fetchall()[0]
+        except IndexError:
+            return None
 
-        return playlist_id
+        return playlist
+
+    def update_playlist_name(self, cursor, playlist_id, new_playlist_name):
+        sql_playlist_name_update = f"UPDATE playlist SET name = '{new_playlist_name}' WHERE id = {playlist_id}"
+        cursor.execute(sql_playlist_name_update)
+        updated_playlist = self.select_playlist(cursor, 'id', playlist_id)
+
+        return updated_playlist
+
+    def delete_playlist(self, cursor, playlist_id):
+        sql_playlist_delete = f"DELETE FROM playlist WHERE id = {playlist_id}"
+        cursor.execute(sql_playlist_delete)
+        deleted_playlist = self.select_playlist(cursor, 'id', playlist_id)
+
+        return deleted_playlist
