@@ -43,8 +43,10 @@ def youtube_crawler(URL):
                     crawling_result[row]["title"] = contents["simpleText"]
                 else:
                     crawling_result[row]["title"] = contents["runs"][0]["text"]
-                    crawling_result[row]["url"] = contents["runs"][0]["navigationEndpoint"]["commandMetadata"][
+                    url = contents["runs"][0]["navigationEndpoint"]["commandMetadata"][
                         "webCommandMetadata"]["url"]
+                    url = url.replace("/watch?v=", "")
+                    crawling_result[row]["url"] = url
                     crawling_result[row]["link"] = True
             elif simple_text == "아티스트":
                 # print(contents)
