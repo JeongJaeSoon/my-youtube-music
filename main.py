@@ -1,6 +1,6 @@
 from controller.Controller import Controller
-from controller.PlayListController import PlayListController
 from controller.MusicListController import MusicListController
+from controller.CrawlerController import CrawlerController
 
 Controller().init_database()
 
@@ -29,4 +29,20 @@ music_list = [
 
 # print(PlayListController().modify_playlist_name(5, "atsseddㅇfst"))
 # print(PlayListController().destroy_playlist(1))
-print(MusicListController().delete_music_list([22, 23, 24]))
+# print(MusicListController().delete_music_list([22, 23, 24]))
+
+urls = [
+    "https://www.youtube.com/watch?v=NqmY7gveaUY",
+    "https://www.youtube.com/watch?v=Zf497FZfDp4",
+    "https://www.youtube.com/watch?v=1pvOgxRQVDM",
+    "https://www.youtube.com/watch?v=arQ13uAvnrM",
+    "https://www.youtube.com/watch?v=gkIxUlJ8bvs",
+    "https://www.youtube.com/watch?v=gkIxUlJ8bvs",
+    "https://www.youtube.com/watch?v=_WXvQz4sjBU",
+    "https://www.youtube.com/watch?v=Z1tAwwrhLAA",
+    "https://www.youtube.com/watch?v=I-2WgNnX1IU",
+    "https://www.youtube.com/watch?v=2NJLODCorFk"
+]
+
+print(CrawlerController().get_music_list(urls[0]))
+print(CrawlerController().get_music_list("https://www.youtube.com/watch?v=DFH2NpzgQ2E"))
