@@ -3,6 +3,9 @@ from controller.Controller import Controller
 
 
 class PlayListController(Controller):
+    def index_playlist(self):
+        return self.playlist.select_playlist_all(self.cursor)
+
     def create_playlist(self, playlist_name, musics=None):
         if musics is None:
             musics = []
@@ -64,6 +67,6 @@ class PlayListController(Controller):
         delete_playlist = self.playlist.delete_playlist(self.cursor, playlist_id)
         delete_music_list = self.music_list.delete_playlist_music(self.cursor, playlist_id)
 
-        if delete_playlist is None and delete_music_list is None:
+        if delete_playlist is None and len(delete_music_list) == 0:
             self.conn.commit()
             return f"'{playlist[1]}' 플레이리스트가 삭제되었습니다."

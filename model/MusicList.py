@@ -6,6 +6,13 @@ class MusicList(Model):
     def __init__(self):
         super().__init__()
 
+    # def select_music_list(self, cursor, playlist_id):
+    #     sql_music_list_select_all = f"SELECT * FROM music_list WHERE playlist_id = {playlist_id}"
+    #     cursor.execute(sql_music_list_select_all)
+    #     music_list = cursor.fetchall()
+    #
+    #     return music_list
+
     # 음악 저장 시, 중복 검사
     def distinct_music_list(self, cursor, playlist_id, music_url):
         sql_music_list_select = f"SELECT COUNT(*) FROM music_list WHERE playlist_id = {playlist_id} and url = '{music_url}'"
@@ -18,7 +25,7 @@ class MusicList(Model):
         sql_playlist_search = f"SELECT * FROM music_list WHERE playlist_id = '{playlist_id}'"
         cursor.execute(sql_playlist_search)
         try:
-            playlist = cursor.fetchall()[0]
+            playlist = cursor.fetchall()
         except IndexError:
             return None
 

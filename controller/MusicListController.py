@@ -2,6 +2,14 @@ from controller.Controller import Controller
 
 
 class MusicListController(Controller):
+    def index_music_list(self, playlist_id):
+        # 플레이리스트가 존재하지 않는 경우
+        playlist = self.playlist.check_playlist(self.cursor, playlist_id)
+        if playlist is False:
+            return "존재하지 않는 플레이리스트입니다."
+
+        return self.music_list.select_music_list(self.cursor, playlist_id)
+
     def add_music_list(self, playlist_id, musics):
         # 플레이리스트가 존재하지 않는 경우
         playlist = self.playlist.check_playlist(self.cursor, playlist_id)

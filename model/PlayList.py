@@ -11,6 +11,14 @@ class PlayList(Model):
 
         return playlist
 
+    # 플레이리스트 조회
+    def select_playlist_all(self, cursor):
+        sql_playlist_select = "SELECT * FROM playlist"
+        cursor.execute(sql_playlist_select)
+        playlists = cursor.fetchall()
+
+        return playlists
+
     # 플레이리스트 생성
     def insert_playlist(self, cursor, playlist_name):
         sql_playlist_insert = f"INSERT INTO playlist(name) VALUES ('{playlist_name}')"

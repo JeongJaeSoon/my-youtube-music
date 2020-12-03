@@ -2,6 +2,13 @@
 
 ## PlayListController
 
+#### 플레이리스트 목록 조회 : `index_playlist()`
+
+- Argument : 없음
+- Return
+    1. 조회 성공 시 : 플레이리스트 목록을 배열로 반환
+    2. 데이터가 없을 경우 : 빈 배열을 반환
+
 #### 플레이리스트 생성 : `create_playlist()`
 
 - Argument
@@ -45,6 +52,16 @@
 
 ## MusicListController
 
+#### 플레이리스트의 음악 목록 조회 : `index_music_list()`
+
+- Argument : 조회할 플레이리스트 Id(Integer)
+- Return
+
+    1. 조회 성공 시 : 플레이리스트에 저장된 악 목록을 배열로 반환
+    2. 데이터가 없을 경우 : 빈 배열을 반환
+    3. 조회 실패 시
+        - 잘못된 플레이리스트 Id : 존재하지 않는 플레이리스트입니다.
+
 #### 플레이리스트에 음악 추가 : `add_music_list()`
 
 - Argument
@@ -76,7 +93,7 @@
 
 - Argument
 
-    1. URL : 크롤링을 할 YouTube URL 
+    1. URL : 크롤링을 할 YouTube URL(String)
     
 - Return
 
