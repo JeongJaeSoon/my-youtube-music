@@ -45,10 +45,10 @@ urls = [
     "https://www.youtube.com/watch?v=2NJLODCorFk"
 ]
 
-# print(CrawlerController().get_music_list(urls[0]))
+print(CrawlerController().get_music_list(urls[0]))
 # print(CrawlerController().get_music_list("https://www.youtube.com/watch?v=DFH2NpzgQ2E"))
 
-print(PlayListController().index_playlist())
-print(MusicListController().index_music_list(14))
-print(PlayListController().destroy_playlist(14))
-print(MusicListController().index_music_list(14))
+# print(PlayListController().index_playlist())
+# print(MusicListController().index_music_list(14))
+# print(PlayListController().destroy_playlist(14))
+# print(MusicListController().index_music_list(14))
