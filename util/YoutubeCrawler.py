@@ -13,8 +13,10 @@ def youtube_crawler(URL):
 
     soup = BeautifulSoup(result.text, "html.parser")
     scripts = soup.find_all("script")
-    yt_initial_data = scripts[32]
+    yt_initial_data = scripts[34]
     yt_json_data = ""
+
+    print(yt_initial_data)
 
     # get json
     for _, script in enumerate(yt_initial_data):
@@ -55,3 +57,7 @@ def youtube_crawler(URL):
                 else:
                     crawling_result[row]["musician"] = contents["runs"][0]["text"]
     return crawling_result
+
+
+url = "https://www.youtube.com/watch?v=DFH2NpzgQ2E"
+print(youtube_crawler(url))
